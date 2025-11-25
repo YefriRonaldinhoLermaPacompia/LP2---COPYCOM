@@ -1,0 +1,91 @@
+.dialog-modern {
+  padding: 10px;
+
+  .form-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 16px;
+
+    .full {
+      width: 100%;
+    }
+  }
+
+  .section-title {
+    margin-top: 25px;
+    font-weight: 600;
+    font-size: 16px;
+    color: #333;
+    border-left: 4px solid #3f51b5;
+    padding-left: 10px;
+  }
+
+  .modern-table {
+    margin-top: 15px;
+    border-radius: 8px;
+    overflow: hidden;
+
+    th {
+      background: #f3f4f6 !important;
+      font-weight: 600;
+    }
+
+    td {
+      padding: 10px 8px;
+    }
+
+    .qty-input {
+      width: 70px;
+      padding: 5px;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+    }
+  }
+
+  .total-box {
+    margin-top: 20px;
+    padding: 15px;
+    background: #f9fafb;
+    border-radius: 10px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-left: 4px solid #4caf50;
+  }
+
+  .payment-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 15px;
+
+    th {
+      text-align: left;
+      background: #eef0f3;
+      padding: 10px;
+    }
+
+    td {
+      padding: 10px;
+    }
+
+    .input-pay {
+      width: 100%;
+      padding: 6px 10px;
+      border-radius: 6px;
+      border: 1px solid #ccc;
+    }
+  }
+
+  .add-btn {
+    margin-top: 10px;
+    width: 100%;
+  }
+}
+
+.footer-actions {
+  padding: 15px;
+
+  button {
+    min-width: 110px;
+  }
+}

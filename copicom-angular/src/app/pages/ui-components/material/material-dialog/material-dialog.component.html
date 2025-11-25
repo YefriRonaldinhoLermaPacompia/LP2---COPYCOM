@@ -1,0 +1,87 @@
+<div class="dialog-container">
+  <h2 mat-dialog-title class="d-flex align-items-center">
+    <mat-icon class="m-r-8">{{ isEditMode ? 'edit' : 'add' }}</mat-icon>
+    {{ isEditMode ? 'Editar Material' : 'Nuevo Material' }}
+  </h2>
+
+  <mat-dialog-content>
+    <form [formGroup]="materialForm" class="material-form">
+
+      <!-- Campo Nombre del Material -->
+      <mat-form-field appearance="outline" class="w-100">
+        <mat-label>Nombre del Material</mat-label>
+        <input
+          matInput
+          formControlName="nombreMaterial"
+          placeholder="Ej: Papel Bond, Cartulina, etc."
+          maxlength="100" />
+        <mat-icon matPrefix>inventory_2</mat-icon>
+
+        <mat-error *ngIf="hasError('nombreMaterial', 'required')">
+          El nombre del material es requerido
+        </mat-error>
+
+        <mat-error *ngIf="hasError('nombreMaterial', 'maxlength')">
+          Máximo 100 caracteres
+        </mat-error>
+      </mat-form-field>
+
+      <!-- Campo Precio Unitario -->
+      <mat-form-field appearance="outline" class="w-100">
+        <mat-label>Precio Unitario</mat-label>
+        <input
+          matInput
+          type="number"
+          formControlName="precioMaterialUnitario"
+          step="0.01"
+          min="0"
+          placeholder="Ej: 2.50" />
+        <mat-icon matPrefix>attach_money</mat-icon>
+
+        <mat-error *ngIf="hasError('precioMaterialUnitario', 'required')">
+          El precio es requerido
+        </mat-error>
+
+        <mat-error *ngIf="hasError('precioMaterialUnitario', 'min')">
+          El precio no puede ser negativo
+        </mat-error>
+      </mat-form-field>
+
+      <!-- Campo Cantidad -->
+      <mat-form-field appearance="outline" class="w-100">
+        <mat-label>Cantidad en Stock / Servicio</mat-label>
+        <input
+          matInput
+          type="number"
+          formControlName="cantidadServicioPedido"
+          min="0"
+          placeholder="Ej: 50" />
+        <mat-icon matPrefix>numbers</mat-icon>
+
+        <mat-error *ngIf="hasError('cantidadServicioPedido', 'required')">
+          Este campo es obligatorio
+        </mat-error>
+
+        <mat-error *ngIf="hasError('cantidadServicioPedido', 'min')">
+          La cantidad no puede ser negativa
+        </mat-error>
+      </mat-form-field>
+
+    </form>
+  </mat-dialog-content>
+
+  <mat-dialog-actions align="end" class="p-16">
+    <button mat-button (click)="onCancel()" type="button">
+      Cancelar
+    </button>
+
+    <button
+      mat-raised-button
+      color="primary"
+      (click)="onSubmit()"
+      type="submit">
+      <mat-icon>{{ isEditMode ? 'save' : 'add' }}</mat-icon>
+      {{ isEditMode ? 'Actualizar' : 'Crear' }}
+    </button>
+  </mat-dialog-actions>
+</div>

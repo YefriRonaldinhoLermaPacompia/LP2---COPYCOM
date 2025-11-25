@@ -1,0 +1,20 @@
+export const END_POINTS = {
+  tamano: "/tamanos",
+  acabado: "/acabados",
+  color: "/colores",
+  material: "/materiales",
+  generacion: "/tipos-generacion",
+  servicio: "/servicios",
+  category: "/api/categorias",
+  product: "/api/productos",
+  sale: "/ventas",
+  client: "/clientes",
+  trabajador: "/trabajadores",
+  envio: "/envios",
+  tipoMaquinaria: "/tipos-maquinaria",
+  maquina: "/maquinas",
+  pedido: "/pedidos",
+  pago: "/pagos",
+  authLogin: "/api/auth/login",
+  authRegister: "/api/auth/register"
+};

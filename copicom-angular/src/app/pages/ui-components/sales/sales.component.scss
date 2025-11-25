@@ -1,0 +1,70 @@
+.card-modern {
+  border-radius: 16px;
+  padding: 20px;
+  background: #ffffff;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.06);
+}
+
+.header-container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.title {
+  font-size: 22px;
+  font-weight: 600;
+  color: #333;
+}
+
+.btn-create {
+  border-radius: 8px;
+  padding: 6px 16px;
+  font-weight: 500;
+}
+
+.table-container {
+  overflow: auto;
+  border-radius: 12px;
+}
+
+.modern-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.modern-table th {
+  background: #f6f7fb;
+  font-weight: 600;
+  color: #555;
+  padding: 14px;
+  border-bottom: 2px solid #e0e0e0;
+}
+
+.modern-table td {
+  padding: 14px;
+  font-size: 14px;
+  color: #444;
+  border-bottom: 1px solid #f1f1f1;
+}
+
+.row-hover:hover {
+  background: #f2f6ff;
+  cursor: pointer;
+  transition: 0.25s;
+}
+
+@media (max-width: 768px) {
+  .title {
+    font-size: 18px;
+  }
+
+  .btn-create {
+    padding: 4px 10px;
+  }
+
+  .modern-table th, .modern-table td {
+    padding: 10px;
+  }
+}

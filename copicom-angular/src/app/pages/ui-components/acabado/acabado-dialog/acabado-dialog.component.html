@@ -1,0 +1,70 @@
+<div class="dialog-container">
+  <h2 mat-dialog-title class="d-flex align-items-center">
+    <mat-icon class="m-r-8">{{ isEditMode ? 'edit' : 'add' }}</mat-icon>
+    {{ isEditMode ? 'Editar Acabado' : 'Nuevo Acabado' }}
+  </h2>
+
+  <mat-dialog-content>
+    <form [formGroup]="acabadoForm" class="acabado-form">
+
+      <!-- Campo Nombre -->
+      <mat-form-field appearance="outline" class="w-100">
+        <mat-label>Nombre del Acabado</mat-label>
+        <input
+          matInput
+          formControlName="nombre"
+          placeholder="Ej: Mate, Brillante, Satinado"
+          maxlength="100"
+        />
+        <mat-icon matPrefix>brush</mat-icon>
+
+        <mat-error *ngIf="hasError('nombre', 'required')">
+          El nombre es requerido.
+        </mat-error>
+
+        <mat-error *ngIf="hasError('nombre', 'maxlength')">
+          Máximo 100 caracteres.
+        </mat-error>
+      </mat-form-field>
+
+      <!-- Campo Precio -->
+      <mat-form-field appearance="outline" class="w-100">
+        <mat-label>Precio del Acabado</mat-label>
+        <input
+          matInput
+          formControlName="precio"
+          type="number"
+          step="0.01"
+          min="0"
+          placeholder="Ej: 3.50"
+        />
+        <mat-icon matPrefix>attach_money</mat-icon>
+
+        <mat-error *ngIf="hasError('precio', 'required')">
+          El precio es requerido.
+        </mat-error>
+
+        <mat-error *ngIf="hasError('precio', 'min')">
+          El precio no puede ser negativo.
+        </mat-error>
+      </mat-form-field>
+
+    </form>
+  </mat-dialog-content>
+
+  <mat-dialog-actions align="end" class="p-16">
+    <button mat-button type="button" (click)="onCancel()">
+      Cancelar
+    </button>
+
+    <button
+      mat-raised-button
+      color="primary"
+      type="submit"
+      (click)="onSubmit()"
+    >
+      <mat-icon class="m-r-8">{{ isEditMode ? 'save' : 'add' }}</mat-icon>
+      {{ isEditMode ? 'Actualizar' : 'Crear' }}
+    </button>
+  </mat-dialog-actions>
+</div>

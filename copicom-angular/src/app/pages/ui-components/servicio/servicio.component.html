@@ -1,0 +1,93 @@
+<mat-card class="cardWithShadow">
+  <mat-card-content>
+
+    <!-- Header -->
+    <div class="d-flex justify-content-between align-items-center m-b-20">
+      <mat-card-title class="m-0">Gestión de Servicios</mat-card-title>
+      <button mat-raised-button color="primary" (click)="openCreateDialog()">
+        <mat-icon>add</mat-icon>
+        Nuevo Servicio
+      </button>
+    </div>
+
+    <!-- Loader -->
+    <div *ngIf="isLoading" class="text-center p-y-40">
+      <mat-spinner diameter="40"></mat-spinner>
+      <p class="m-t-16 text-muted">Cargando servicios...</p>
+    </div>
+
+    <!-- Tabla -->
+    <div *ngIf="!isLoading" class="table-responsive">
+      <table mat-table [dataSource]="servicios" class="w-100">
+
+        <!-- Columna Nombre del Servicio -->
+        <ng-container matColumnDef="nombreServicio">
+          <th mat-header-cell *matHeaderCellDef class="f-w-600 f-s-14">Nombre</th>
+          <td mat-cell *matCellDef="let srv">
+            {{ srv.nombreServicio }}
+          </td>
+        </ng-container>
+
+        <!-- Columna Descripción -->
+        <ng-container matColumnDef="descripcion">
+          <th mat-header-cell *matHeaderCellDef class="f-w-600 f-s-14">Descripción</th>
+          <td mat-cell *matCellDef="let srv">
+            {{ srv.descripcion }}
+          </td>
+        </ng-container>
+
+        <!-- Columna Precio Unitario -->
+        <ng-container matColumnDef="precioUnitario">
+          <th mat-header-cell *matHeaderCellDef class="f-w-600 f-s-14">Precio Unitario</th>
+          <td mat-cell *matCellDef="let srv">
+            {{ srv.precioUnitario | currency:'PEN':'symbol':'1.2-2' }}
+          </td>
+        </ng-container>
+
+        <!-- Columna Cantidad -->
+        <ng-container matColumnDef="cantidad">
+          <th mat-header-cell *matHeaderCellDef class="f-w-600 f-s-14">Cantidad</th>
+          <td mat-cell *matCellDef="let srv">
+            {{ srv.cantidad }}
+          </td>
+        </ng-container>
+
+        <!-- Columna Acciones -->
+        <ng-container matColumnDef="acciones">
+          <th mat-header-cell *matHeaderCellDef></th>
+          <td mat-cell *matCellDef="let srv">
+            <button mat-icon-button [matMenuTriggerFor]="menu">
+              <mat-icon>more_vert</mat-icon>
+            </button>
+
+            <mat-menu #menu="matMenu">
+              <button mat-menu-item (click)="openEditDialog(srv)">
+                <mat-icon color="primary">edit</mat-icon>
+                <span>Editar</span>
+              </button>
+
+              <button mat-menu-item (click)="deleteServicio(srv)">
+                <mat-icon color="warn">delete</mat-icon>
+                <span>Eliminar</span>
+              </button>
+            </mat-menu>
+          </td>
+        </ng-container>
+
+        <!-- Header y rows -->
+        <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+        <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
+
+        <!-- Sin datos -->
+        <tr class="mat-row" *matNoDataRow>
+          <td class="mat-cell text-center p-y-40" [attr.colspan]="displayedColumns.length">
+            <mat-icon class="f-s-48 text-muted m-b-16">inventory_2</mat-icon>
+            <p class="text-muted">No existen servicios registrados.</p>
+          </td>
+        </tr>
+
+      </table>
+    </div>
+
+  </mat-card-content>
+</mat-card>

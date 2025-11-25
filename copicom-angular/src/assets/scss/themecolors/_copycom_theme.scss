@@ -1,0 +1,18 @@
+@use "sass:map";
+@use "@angular/material" as mat;
+
+// Tema COPYCOM - Colores CMYK (Impresión Digital)
+html .copycom_theme {
+  // Magenta (Rosa vibrante) - Color primario
+  --mat-sys-primary: rgb(233, 30, 99); // #E91E63 - Magenta vibrante
+  --mat-sys-primary-fixed-dim: rgba(233, 30, 99, 0.15);
+  
+  // Cyan (Azul claro) - Color secundario
+  --mat-sys-secondary: rgb(0, 188, 212); // #00BCD4 - Cyan
+  --mat-sys-secondary-fixed-dim: rgba(0, 188, 212, 0.15);
+  
+  // Amarillo - Color de acento
+  --mat-sys-tertiary: rgb(255, 193, 7); // #FFC107 - Amarillo
+  --mat-sys-tertiary-fixed-dim: rgba(255, 193, 7, 0.15);
+}
+

@@ -1,0 +1,157 @@
+<div class="dialog-container">
+  <h2 mat-dialog-title class="d-flex align-items-center">
+    <mat-icon class="m-r-8">{{ isEditMode ? 'edit' : 'add' }}</mat-icon>
+    {{ isEditMode ? 'Editar Pedido' : 'Nuevo Pedido' }}
+  </h2>
+
+  <mat-dialog-content>
+    <form [formGroup]="pedidoForm" class="pedido-form">
+      <div class="row">
+        <div class="col-md-6">
+          <mat-form-field appearance="outline" class="w-100">
+            <mat-label>Cliente</mat-label>
+            <mat-select formControlName="clienteId">
+              <mat-option *ngFor="let client of clients" [value]="client.id">
+                {{ client.dni }} - {{ client.nombres }} {{ client.apellidos }}
+              </mat-option>
+            </mat-select>
+            <mat-icon matPrefix>person</mat-icon>
+            <mat-error *ngIf="pedidoForm.get('clienteId')?.hasError('required')">El cliente es requerido.</mat-error>
+          </mat-form-field>
+        </div>
+        <div class="col-md-6">
+          <mat-form-field appearance="outline" class="w-100">
+            <mat-label>Estado</mat-label>
+            <mat-select formControlName="estado">
+              <mat-option value="PENDIENTE">Pendiente</mat-option>
+              <mat-option value="EN_PRODUCCION">En Producción</mat-option>
+              <mat-option value="ENTREGADO">Entregado</mat-option>
+              <mat-option value="CANCELADO">Cancelado</mat-option>
+            </mat-select>
+            <mat-icon matPrefix>info</mat-icon>
+          </mat-form-field>
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="col-md-6">
+          <mat-form-field appearance="outline" class="w-100">
+            <mat-label>Serie</mat-label>
+            <input matInput formControlName="serie" placeholder="Ej: PED, B001" maxlength="20" />
+            <mat-icon matPrefix>tag</mat-icon>
+            <mat-hint>Serie del pedido (opcional, por defecto: PED)</mat-hint>
+            <mat-error *ngIf="pedidoForm.get('serie')?.hasError('maxlength')">La serie no puede exceder 20 caracteres.</mat-error>
+          </mat-form-field>
+        </div>
+        <div class="col-md-6">
+          <mat-form-field appearance="outline" class="w-100">
+            <mat-label>Número de Pedido</mat-label>
+            <input matInput formControlName="numeroPedido" placeholder="Ej: 00001" maxlength="20" />
+            <mat-icon matPrefix>confirmation_number</mat-icon>
+            <mat-hint>Número del pedido (opcional, se genera automáticamente si está vacío)</mat-hint>
+            <mat-error *ngIf="pedidoForm.get('numeroPedido')?.hasError('maxlength')">El número no puede exceder 20 caracteres.</mat-error>
+          </mat-form-field>
+        </div>
+      </div>
+
+      <mat-form-field appearance="outline" class="w-100">
+        <mat-label>Observaciones</mat-label>
+        <textarea matInput formControlName="observaciones" rows="2" placeholder="Observaciones adicionales" maxlength="500"></textarea>
+        <mat-icon matPrefix>note</mat-icon>
+      </mat-form-field>
+
+      <!-- Buscar Servicio -->
+      <mat-form-field appearance="outline" class="w-100">
+        <mat-label>Buscar Servicio</mat-label>
+        <input matInput formControlName="nombreServicio" placeholder="Buscar servicio..." [matAutocomplete]="auto" />
+        <mat-autocomplete #auto="matAutocomplete" autoActiveFirstOption>
+          <mat-option *ngFor="let servicio of serviciosFiltrados | async" [value]="servicio.nombreServicio"
+                      (onSelectionChange)="selectServicio(servicio)">
+            {{ servicio.nombreServicio }} - S/ {{ servicio.precioUnitario }}
+          </mat-option>
+        </mat-autocomplete>
+        <mat-icon matPrefix>search</mat-icon>
+      </mat-form-field>
+    </form>
+
+    <!-- Tabla de Detalles -->
+    <div class="section-title m-t-20">Servicios del Pedido</div>
+    <table mat-table [dataSource]="detalles" class="w-100 mat-elevation-z2">
+      <ng-container matColumnDef="servicio">
+        <th mat-header-cell *matHeaderCellDef>Servicio</th>
+        <td mat-cell *matCellDef="let detalle">{{ detalle.servicioNombre }}</td>
+      </ng-container>
+
+      <ng-container matColumnDef="cantidad">
+        <th mat-header-cell *matHeaderCellDef>Cantidad</th>
+        <td mat-cell *matCellDef="let detalle">
+          <input type="number" min="1" [value]="detalle.cantidad" 
+                 (change)="updateDetalle(detalle, 'cantidad', $any($event.target).value)" 
+                 class="qty-input" style="width: 60px;" />
+        </td>
+      </ng-container>
+
+      <ng-container matColumnDef="trabajador">
+        <th mat-header-cell *matHeaderCellDef>Trabajador</th>
+        <td mat-cell *matCellDef="let detalle">
+          <select [value]="detalle.trabajadorId" 
+                  (change)="updateDetalle(detalle, 'trabajadorId', $any($event.target).value)"
+                  class="form-select" style="width: 100%;">
+            <option value="">Seleccionar...</option>
+            <option *ngFor="let trabajador of trabajadores" [value]="trabajador.id">
+              {{ trabajador.nombres }} - {{ trabajador.dni }}
+            </option>
+          </select>
+        </td>
+      </ng-container>
+
+      <ng-container matColumnDef="maquina">
+        <th mat-header-cell *matHeaderCellDef>Máquina</th>
+        <td mat-cell *matCellDef="let detalle">
+          <select [value]="detalle.maquinaId" 
+                  (change)="updateDetalle(detalle, 'maquinaId', $any($event.target).value)"
+                  class="form-select" style="width: 100%;">
+            <option value="">Seleccionar...</option>
+            <option *ngFor="let maquina of maquinas" [value]="maquina.id">
+              {{ maquina.nombreMaquina }}
+            </option>
+          </select>
+        </td>
+      </ng-container>
+
+      <ng-container matColumnDef="subtotal">
+        <th mat-header-cell *matHeaderCellDef>Subtotal</th>
+        <td mat-cell *matCellDef="let detalle">
+          S/ {{ detalle.subtotal | number:'1.2-2' }}
+        </td>
+      </ng-container>
+
+      <ng-container matColumnDef="accion">
+        <th mat-header-cell *matHeaderCellDef></th>
+        <td mat-cell *matCellDef="let detalle; let i = index">
+          <button mat-icon-button color="warn" (click)="removeDetalle(i)">
+            <mat-icon>delete</mat-icon>
+          </button>
+        </td>
+      </ng-container>
+
+      <tr mat-header-row *matHeaderRowDef="['servicio', 'cantidad', 'trabajador', 'maquina', 'subtotal', 'accion']"></tr>
+      <tr mat-row *matRowDef="let row; columns: ['servicio', 'cantidad', 'trabajador', 'maquina', 'subtotal', 'accion']"></tr>
+    </table>
+
+    <!-- Total -->
+    <div class="total-box m-t-20">
+      <span class="f-s-18 f-w-600">Total General:</span>
+      <h2 class="text-primary">S/ {{ subTotal | number:'1.2-2' }}</h2>
+    </div>
+  </mat-dialog-content>
+
+  <mat-dialog-actions align="end" class="p-16">
+    <button mat-button type="button" (click)="onCancel()">Cancelar</button>
+    <button mat-raised-button color="primary" type="submit" (click)="onSubmit()">
+      <mat-icon class="m-r-8">{{ isEditMode ? 'save' : 'add' }}</mat-icon>
+      {{ isEditMode ? 'Actualizar' : 'Crear' }}
+    </button>
+  </mat-dialog-actions>
+</div>
+

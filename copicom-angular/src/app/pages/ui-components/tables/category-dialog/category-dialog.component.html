@@ -1,0 +1,80 @@
+<div class="dialog-container">
+  <h2 mat-dialog-title class="d-flex align-items-center">
+    <mat-icon class="m-r-8">{{ isEditMode ? 'edit' : 'add' }}</mat-icon>
+    {{ isEditMode ? 'Editar Categoría' : 'Nueva Categoría' }}
+  </h2>
+
+  <mat-dialog-content>
+    <form [formGroup]="categoryForm" class="category-form">
+
+      <!-- Campo Código -->
+      <mat-form-field appearance="outline" class="w-100">
+        <mat-label>Código</mat-label>
+        <input
+          matInput
+          formControlName="codigo"
+          placeholder="Ej: CAT001"
+          maxlength="10">
+        <mat-icon matPrefix>tag</mat-icon>
+        <mat-error *ngIf="hasError('codigo', 'required')">
+          El código es requerido
+        </mat-error>
+        <mat-error *ngIf="hasError('codigo', 'maxlength')">
+          Máximo 10 caracteres
+        </mat-error>
+        <mat-hint *ngIf="isEditMode">El código no puede ser modificado</mat-hint>
+      </mat-form-field>
+
+      <!-- Campo Nombre -->
+      <mat-form-field appearance="outline" class="w-100">
+        <mat-label>Nombre</mat-label>
+        <input
+          matInput
+          formControlName="nombre"
+          placeholder="Ej: Electrónica"
+          maxlength="100">
+        <mat-icon matPrefix>category</mat-icon>
+        <mat-error *ngIf="hasError('nombre', 'required')">
+          El nombre es requerido
+        </mat-error>
+        <mat-error *ngIf="hasError('nombre', 'maxlength')">
+          Máximo 100 caracteres
+        </mat-error>
+      </mat-form-field>
+
+      <!-- Campo Descripción -->
+      <mat-form-field appearance="outline" class="w-100">
+        <mat-label>Descripción</mat-label>
+        <textarea
+          matInput
+          formControlName="descripcion"
+          placeholder="Descripción de la categoría"
+          rows="4"
+          maxlength="500"></textarea>
+        <mat-icon matPrefix>description</mat-icon>
+        <mat-hint align="end">
+          {{ getCharCount('descripcion') }}/500
+        </mat-hint>
+        <mat-error *ngIf="hasError('descripcion', 'maxlength')">
+          Máximo 500 caracteres
+        </mat-error>
+      </mat-form-field>
+
+    </form>
+  </mat-dialog-content>
+
+  <mat-dialog-actions align="end" class="p-16">
+    <button mat-button (click)="onCancel()" type="button">
+      Cancelar
+    </button>
+    <button
+      mat-raised-button
+      color="primary"
+      (click)="onSubmit()"
+
+      type="submit">
+      <mat-icon>{{ isEditMode ? 'save' : 'add' }}</mat-icon>
+      {{ isEditMode ? 'Actualizar' : 'Crear' }}
+    </button>
+  </mat-dialog-actions>
+</div>

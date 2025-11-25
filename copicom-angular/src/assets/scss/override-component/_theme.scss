@@ -1,0 +1,85 @@
+@use "sass:map";
+@use "@angular/material" as mat;
+@use "../variables" as *;
+
+html {
+  @include mat.theme(
+    (
+      color: mat.$azure-palette,
+      typography: "Manrope",
+    )
+  );
+
+  @include mat.theme-overrides(
+    (
+      error: rgb(255, 102, 146),
+      body-medium-size: 14px,
+      body-large-size: 14px,
+      outline-variant: rgba(233, 30, 99, 0.12), // Borde sutil magenta CMYK
+      level1: 0px 2px 4px -1px rgba(233, 30, 99, 0.08), // Sombra sutil magenta
+      level2: 0px 2px 4px -1px rgba(0, 188, 212, 0.1), // Sombra sutil cyan
+      level3: 0px 2px 4px -1px rgba(255, 193, 7, 0.1), // Sombra sutil amarillo
+      level4: 0 15px 30px rgba(233, 30, 99, 0.15) // Sombra más pronunciada
+    )
+  );
+}
+
+// Estilos personalizados para COPYCOM
+.copycom_theme {
+  // Ajustes de color para mejor contraste con colores CMYK
+  .mat-mdc-button.mat-primary {
+    background-color: var(--mat-sys-primary);
+    color: white;
+    
+    &:hover {
+      background-color: rgba(233, 30, 99, 0.9);
+    }
+  }
+  
+  .mat-mdc-button.mat-secondary {
+    background-color: var(--mat-sys-secondary);
+    color: white;
+    
+    &:hover {
+      background-color: rgba(0, 188, 212, 0.9);
+    }
+  }
+  
+  // Mejora de bordes en formularios
+  .mat-mdc-form-field {
+    .mdc-notched-outline {
+      .mdc-notched-outline__leading,
+      .mdc-notched-outline__notch,
+      .mdc-notched-outline__trailing {
+        border-color: rgba(0, 188, 212, 0.2) !important;
+      }
+    }
+    
+    &.mat-focused {
+      .mdc-notched-outline {
+        .mdc-notched-outline__leading,
+        .mdc-notched-outline__notch,
+        .mdc-notched-outline__trailing {
+          border-color: var(--mat-sys-primary) !important;
+          border-width: 2px !important;
+        }
+      }
+    }
+  }
+  
+  // Bordes en tablas
+  .mat-mdc-table {
+    border: 1px solid rgba(233, 30, 99, 0.1);
+    border-radius: 8px;
+    overflow: hidden;
+    
+    th {
+      border-bottom: 2px solid rgba(0, 188, 212, 0.2);
+      background-color: rgba(0, 188, 212, 0.05);
+    }
+    
+    td {
+      border-bottom: 1px solid rgba(233, 30, 99, 0.08);
+    }
+  }
+}

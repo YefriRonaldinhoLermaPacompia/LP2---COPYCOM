@@ -1,0 +1,102 @@
+@use "sass:map";
+@use "@angular/material" as mat;
+@use "../variables" as *;
+
+@include mat.card-overrides(
+  (
+    elevated-container-color: $white,
+    outlined-container-color: $white,
+    title-text-size: 1.125rem,
+    subtitle-text-size: 14px,
+    subtitle-text-color: var(--mat-sys-surface-container-low),
+    title-text-line-height: 1.6rem,
+    title-text-weight: 600,
+    subtitle-text-weight: 400,
+    elevated-container-shape: var(--mat-sys-corner-small),
+    outlined-container-shape: var(--mat-sys-corner-small),
+    elevated-container-elevation: var(--mat-sys-level2),
+  )
+);
+
+// styles
+html {
+  .mat-mdc-card {
+    margin-bottom: $card-spacer;
+    .mat-mdc-card-header {
+      padding: 16px $card-spacer !important;
+    }
+    .mat-mdc-card-header + .mat-mdc-card-content {
+      padding: 0 $card-spacer $card-spacer;
+    }
+    > .mat-mdc-card-content {
+      padding: $card-spacer !important;
+    }
+
+    .mdc-card__actions {
+      padding: $card-spacer !important;
+    }
+  }
+
+  .card-hover {
+    transition: box-shadow 300ms cubic-bezier(0.4, 0, 0.2, 1) 0ms;
+    &:hover {
+      scale: 1.01;
+      transition: all 0.1s ease-in 0s;
+    }
+  }
+
+  .cardBorder {
+    .mdc-card {
+      box-shadow: none !important;
+      border: 1px solid $borderColor !important;
+      &.shadow-none {
+        border: 0 !important;
+      }
+    }
+  }
+}
+
+// Estilos COPYCOM - Bordes CMYK para tarjetas
+.copycom_theme {
+  .mat-mdc-card {
+    border: 1px solid rgba(233, 30, 99, 0.1) !important; // Borde sutil magenta
+    border-radius: 12px;
+    transition: all 0.3s ease;
+    
+    &:hover {
+      border-color: rgba(233, 30, 99, 0.3) !important; // Borde más visible al hover
+      box-shadow: 0 4px 12px rgba(233, 30, 99, 0.1) !important;
+    }
+  }
+  
+  // Bordes alternativos con colores CMYK para variedad
+  .card-cyan {
+    border-color: rgba(0, 188, 212, 0.15) !important;
+    &:hover {
+      border-color: rgba(0, 188, 212, 0.3) !important;
+      box-shadow: 0 4px 12px rgba(0, 188, 212, 0.1) !important;
+    }
+  }
+  
+  .card-yellow {
+    border-color: rgba(255, 193, 7, 0.15) !important;
+    &:hover {
+      border-color: rgba(255, 193, 7, 0.3) !important;
+      box-shadow: 0 4px 12px rgba(255, 193, 7, 0.1) !important;
+    }
+  }
+  
+  // Borde superior decorativo CMYK
+  .card-cmyk-top {
+    border-top: 3px solid;
+    border-image: linear-gradient(90deg, 
+      rgba(255, 193, 7, 0.6) 0%,      // Amarillo
+      rgba(0, 188, 212, 0.6) 33%,     // Cyan
+      rgba(233, 30, 99, 0.6) 66%,     // Magenta
+      rgba(0, 188, 212, 0.6) 100%    // Cyan
+    ) 1;
+    border-left: 1px solid rgba(233, 30, 99, 0.1);
+    border-right: 1px solid rgba(233, 30, 99, 0.1);
+    border-bottom: 1px solid rgba(233, 30, 99, 0.1);
+  }
+}

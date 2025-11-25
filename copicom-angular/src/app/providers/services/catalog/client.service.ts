@@ -1,0 +1,16 @@
+import {Injectable} from '@angular/core';
+import {HttpClient} from '@angular/common/http';
+import {EntityDataService} from '../../utils/entity-data.service';
+import {END_POINTS} from '../../utils/end-points';
+import {Client} from "../../../models/client.model";
+
+
+@Injectable({providedIn: 'root'})
+export class ClientService extends EntityDataService<Client[]> {
+
+  constructor(protected override httpClient: HttpClient) {
+    super(httpClient, END_POINTS.client);
+  }
+
+
+}

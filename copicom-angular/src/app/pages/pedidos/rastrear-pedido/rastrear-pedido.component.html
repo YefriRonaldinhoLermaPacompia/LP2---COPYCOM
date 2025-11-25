@@ -1,0 +1,211 @@
+<mat-card class="cardWithShadow">
+  <mat-card-content>
+    <div class="d-flex justify-content-between align-items-center m-b-20">
+      <mat-card-title class="m-0">
+        <mat-icon class="m-r-8">local_shipping</mat-icon>
+        Rastreo de Pedidos
+      </mat-card-title>
+    </div>
+
+    <p class="text-muted m-b-30">
+      Ingrese la serie y número de su pedido para consultar su estado actual y seguimiento.
+    </p>
+
+    <!-- Formulario de Búsqueda -->
+    <form [formGroup]="rastreoForm" class="rastreo-form m-b-30">
+      <div class="row">
+        <div class="col-md-3">
+          <mat-form-field appearance="outline" class="w-100">
+            <mat-label>Serie</mat-label>
+            <input matInput formControlName="serie" placeholder="Ej: PED" maxlength="20" />
+            <mat-icon matPrefix>tag</mat-icon>
+            <mat-hint>Serie del pedido</mat-hint>
+            <mat-error *ngIf="rastreoForm.get('serie')?.hasError('required')">La serie es requerida.</mat-error>
+          </mat-form-field>
+        </div>
+        <div class="col-md-4">
+          <mat-form-field appearance="outline" class="w-100">
+            <mat-label>Número</mat-label>
+            <input matInput formControlName="numero" placeholder="Ej: 00001" maxlength="20" />
+            <mat-icon matPrefix>confirmation_number</mat-icon>
+            <mat-hint>Número del pedido</mat-hint>
+            <mat-error *ngIf="rastreoForm.get('numero')?.hasError('required')">El número es requerido.</mat-error>
+          </mat-form-field>
+        </div>
+        <div class="col-md-5 d-flex align-items-end">
+          <button 
+            mat-raised-button 
+            color="primary" 
+            (click)="buscarPedido()" 
+            [disabled]="isLoading || rastreoForm.invalid" 
+            class="w-100 m-r-8">
+            <mat-icon class="m-r-8">search</mat-icon>
+            Buscar Pedido
+          </button>
+          <button 
+            mat-stroked-button 
+            (click)="rastreoForm.reset(); pedido = null; timelineEstados = []" 
+            [disabled]="isLoading"
+            class="m-l-8">
+            <mat-icon>refresh</mat-icon>
+          </button>
+        </div>
+      </div>
+    </form>
+
+    <!-- Loading -->
+    <div *ngIf="isLoading" class="text-center p-y-40">
+      <mat-spinner diameter="50" class="m-auto"></mat-spinner>
+      <p class="m-t-16 text-muted">Buscando pedido...</p>
+    </div>
+
+    <!-- Resultado del Rastreo -->
+    <div *ngIf="!isLoading && pedido" class="rastreo-resultado">
+      
+      <!-- Información Principal del Pedido -->
+      <mat-card class="mat-elevation-z2 m-b-20">
+        <mat-card-header>
+          <mat-card-title>
+            <div class="d-flex align-items-center">
+              <mat-icon [color]="getEstadoColor(pedido.estado)" class="m-r-8">
+                {{ getEstadoIcon(pedido.estado) }}
+              </mat-icon>
+              <span>Pedido {{ pedido.serie }}-{{ pedido.numeroPedido }}</span>
+            </div>
+          </mat-card-title>
+        </mat-card-header>
+        <mat-card-content>
+          <div class="row m-t-16">
+            <div class="col-md-6">
+              <p class="m-0"><strong>Estado Actual:</strong></p>
+              <mat-chip [color]="getEstadoColor(pedido.estado)" class="m-t-8">
+                {{ pedido.estado || 'PENDIENTE' }}
+              </mat-chip>
+            </div>
+            <div class="col-md-6">
+              <p class="m-0"><strong>Fecha del Pedido:</strong></p>
+              <p class="m-0 m-t-8">{{ pedido.fechaPedido ? (pedido.fechaPedido | date:'full') : 'N/A' }}</p>
+            </div>
+          </div>
+          <mat-divider class="m-y-16"></mat-divider>
+          <div class="row">
+            <div class="col-md-6">
+              <p class="m-0"><strong>Cliente:</strong> {{ pedido.clienteNombre || 'N/A' }}</p>
+              <p class="m-0 m-t-4"><strong>DNI:</strong> {{ pedido.clienteDni || 'N/A' }}</p>
+            </div>
+            <div class="col-md-6">
+              <p class="m-0"><strong>Total:</strong></p>
+              <h4 class="m-0 m-t-8 text-primary">
+                {{ pedido.totalPedido | currency:'PEN':'symbol':'1.2-2' }}
+              </h4>
+            </div>
+          </div>
+          <div *ngIf="pedido.observaciones" class="m-t-16">
+            <p class="m-0"><strong>Observaciones:</strong></p>
+            <p class="m-0 m-t-4 text-muted">{{ pedido.observaciones }}</p>
+          </div>
+        </mat-card-content>
+      </mat-card>
+
+      <!-- Timeline de Estados -->
+      <mat-card class="mat-elevation-z2 m-b-20">
+        <mat-card-header>
+          <mat-card-title>
+            <mat-icon class="m-r-8">timeline</mat-icon>
+            Seguimiento del Pedido
+          </mat-card-title>
+        </mat-card-header>
+        <mat-card-content>
+          <div class="timeline-container">
+            <div *ngFor="let estadoItem of timelineEstados; let i = index" class="timeline-item">
+              <div class="timeline-marker">
+                <mat-icon 
+                  [color]="getTimelineColor(estadoItem)"
+                  class="timeline-icon">
+                  {{ getTimelineIcon(estadoItem) }}
+                </mat-icon>
+                <div 
+                  *ngIf="i < timelineEstados.length - 1" 
+                  class="timeline-line"
+                  [class.timeline-line-active]="estadoItem.completado && estadoItem.estado !== 'CANCELADO'">
+                </div>
+              </div>
+              <div class="timeline-content">
+                <div class="d-flex align-items-center m-b-8">
+                  <h5 class="m-0 m-r-8">{{ estadoItem.estado.replace('_', ' ') }}</h5>
+                  <mat-chip 
+                    *ngIf="estadoItem.activo" 
+                    color="accent" 
+                    class="m-0">
+                    Actual
+                  </mat-chip>
+                </div>
+                <p class="text-muted m-0">{{ estadoItem.descripcion }}</p>
+                <p *ngIf="estadoItem.fecha" class="text-muted m-t-4 m-0 f-s-12">
+                  <mat-icon class="f-s-14">schedule</mat-icon>
+                  {{ estadoItem.fecha | date:'short' }}
+                </p>
+              </div>
+            </div>
+          </div>
+        </mat-card-content>
+      </mat-card>
+
+      <!-- Detalles del Pedido -->
+      <mat-card *ngIf="pedido.detalles && pedido.detalles.length > 0" class="mat-elevation-z2">
+        <mat-card-header>
+          <mat-card-title>
+            <mat-icon class="m-r-8">list</mat-icon>
+            Detalles del Pedido
+          </mat-card-title>
+        </mat-card-header>
+        <mat-card-content>
+          <div class="table-responsive">
+            <table class="table w-100">
+              <thead>
+                <tr>
+                  <th>Cantidad</th>
+                  <th>Descripción</th>
+                  <th>Precio Unit.</th>
+                  <th>Subtotal</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr *ngFor="let detalle of pedido.detalles">
+                  <td>{{ detalle.cantidad }}</td>
+                  <td>
+                    <strong>{{ detalle.servicioNombre || 'Servicio' }}</strong>
+                    <div *ngIf="detalle.trabajadorNombre" class="text-muted f-s-12">
+                      Trabajador: {{ detalle.trabajadorNombre }}
+                    </div>
+                    <div *ngIf="detalle.maquinaNombre" class="text-muted f-s-12">
+                      Máquina: {{ detalle.maquinaNombre }}
+                    </div>
+                  </td>
+                  <td>{{ detalle.precioUnitario | currency:'PEN':'symbol':'1.2-2' }}</td>
+                  <td><strong>{{ detalle.subtotal | currency:'PEN':'symbol':'1.2-2' }}</strong></td>
+                </tr>
+              </tbody>
+              <tfoot>
+                <tr>
+                  <td colspan="3" class="text-end"><strong>Total:</strong></td>
+                  <td><strong>{{ pedido.totalPedido | currency:'PEN':'symbol':'1.2-2' }}</strong></td>
+                </tr>
+              </tfoot>
+            </table>
+          </div>
+        </mat-card-content>
+      </mat-card>
+
+    </div>
+
+    <!-- Mensaje inicial -->
+    <div *ngIf="!isLoading && !pedido" class="text-center p-y-40">
+      <mat-icon class="f-s-64 text-muted m-b-16">local_shipping</mat-icon>
+      <p class="f-s-18 text-muted m-0">Ingrese la serie y número de su pedido para comenzar el rastreo</p>
+      <p class="f-s-14 text-muted m-t-8">Ejemplo: Serie "PED" - Número "00001"</p>
+    </div>
+
+  </mat-card-content>
+</mat-card>
+

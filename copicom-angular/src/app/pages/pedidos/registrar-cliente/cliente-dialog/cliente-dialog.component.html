@@ -1,0 +1,79 @@
+<div class="dialog-container">
+  <h2 mat-dialog-title class="d-flex align-items-center">
+    <mat-icon class="m-r-8">{{ isEditMode ? 'edit' : 'add' }}</mat-icon>
+    {{ isEditMode ? 'Editar Cliente' : 'Nuevo Cliente' }}
+  </h2>
+
+  <mat-dialog-content>
+    <form [formGroup]="clienteForm" class="cliente-form">
+      <div class="row">
+        <div class="col-md-6">
+          <mat-form-field appearance="outline" class="w-100">
+            <mat-label>Nombres</mat-label>
+            <input matInput formControlName="nombres" placeholder="Ingrese nombres" maxlength="100" />
+            <mat-icon matPrefix>person</mat-icon>
+            <mat-error *ngIf="hasError('nombres', 'required')">Los nombres son requeridos.</mat-error>
+          </mat-form-field>
+        </div>
+        <div class="col-md-6">
+          <mat-form-field appearance="outline" class="w-100">
+            <mat-label>Apellidos</mat-label>
+            <input matInput formControlName="apellidos" placeholder="Ingrese apellidos" maxlength="100" />
+            <mat-icon matPrefix>person</mat-icon>
+            <mat-error *ngIf="hasError('apellidos', 'required')">Los apellidos son requeridos.</mat-error>
+          </mat-form-field>
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="col-md-6">
+          <mat-form-field appearance="outline" class="w-100">
+            <mat-label>DNI</mat-label>
+            <input matInput formControlName="dni" placeholder="Ingrese DNI" maxlength="45" />
+            <mat-icon matPrefix>badge</mat-icon>
+          </mat-form-field>
+        </div>
+        <div class="col-md-6">
+          <mat-form-field appearance="outline" class="w-100">
+            <mat-label>Teléfono</mat-label>
+            <input matInput formControlName="telefono" placeholder="Ingrese teléfono" maxlength="45" />
+            <mat-icon matPrefix>phone</mat-icon>
+          </mat-form-field>
+        </div>
+      </div>
+
+      <mat-form-field appearance="outline" class="w-100">
+        <mat-label>Dirección</mat-label>
+        <input matInput formControlName="direccion" placeholder="Ingrese dirección" maxlength="255" />
+        <mat-icon matPrefix>home</mat-icon>
+      </mat-form-field>
+
+      <div class="row">
+        <div class="col-md-6">
+          <mat-form-field appearance="outline" class="w-100">
+            <mat-label>RUC</mat-label>
+            <input matInput formControlName="ruc" placeholder="Ingrese RUC (opcional)" maxlength="45" />
+            <mat-icon matPrefix>business</mat-icon>
+          </mat-form-field>
+        </div>
+        <div class="col-md-6">
+          <mat-form-field appearance="outline" class="w-100">
+            <mat-label>Correo Electrónico</mat-label>
+            <input matInput type="email" formControlName="correo" placeholder="Ingrese correo (opcional)" maxlength="145" />
+            <mat-icon matPrefix>email</mat-icon>
+            <mat-error *ngIf="hasError('correo', 'email')">Correo inválido.</mat-error>
+          </mat-form-field>
+        </div>
+      </div>
+    </form>
+  </mat-dialog-content>
+
+  <mat-dialog-actions align="end" class="p-16">
+    <button mat-button type="button" (click)="onCancel()">Cancelar</button>
+    <button mat-raised-button color="primary" type="submit" (click)="onSubmit()">
+      <mat-icon class="m-r-8">{{ isEditMode ? 'save' : 'add' }}</mat-icon>
+      {{ isEditMode ? 'Actualizar' : 'Crear' }}
+    </button>
+  </mat-dialog-actions>
+</div>
+

@@ -1,0 +1,109 @@
+<mat-card class="cardWithShadow">
+  <mat-card-content>
+    <div class="d-flex justify-content-between align-items-center m-b-20">
+      <mat-card-title class="m-0">Administrar Pedidos</mat-card-title>
+      <button mat-raised-button color="primary" (click)="openCreateDialog()">
+        <mat-icon>add</mat-icon>
+        Nuevo Pedido
+      </button>
+    </div>
+
+    <div *ngIf="isLoading" class="text-center p-y-40">
+      <mat-spinner diameter="40" class="m-auto"></mat-spinner>
+      <p class="m-t-16 text-muted">Cargando pedidos...</p>
+    </div>
+
+    <div *ngIf="!isLoading" class="table-responsive">
+      <table mat-table [dataSource]="pedidos" class="w-100">
+        <ng-container matColumnDef="codigo">
+          <th mat-header-cell *matHeaderCellDef class="f-w-600 f-s-14">Código Pedido</th>
+          <td mat-cell *matCellDef="let pedido">
+            <h6 class="f-s-15 f-w-600 text-dark m-0">
+              {{ pedido.serie && pedido.numeroPedido ? pedido.serie + '-' + pedido.numeroPedido : '#' + pedido.id }}
+            </h6>
+            <span class="f-s-12 text-muted">ID: {{ pedido.id }}</span>
+          </td>
+        </ng-container>
+
+        <ng-container matColumnDef="clienteNombre">
+          <th mat-header-cell *matHeaderCellDef class="f-w-600 f-s-14">Cliente</th>
+          <td mat-cell *matCellDef="let pedido">
+            <h6 class="f-s-15 f-w-600 text-dark m-0">{{ pedido.clienteNombre || 'N/A' }}</h6>
+            <span class="f-s-12 text-muted">{{ pedido.clienteDni || '' }}</span>
+          </td>
+        </ng-container>
+
+        <ng-container matColumnDef="fechaPedido">
+          <th mat-header-cell *matHeaderCellDef class="f-w-600 f-s-14">Fecha</th>
+          <td mat-cell *matCellDef="let pedido">
+            {{ pedido.fechaPedido ? (pedido.fechaPedido | date:'short') : 'N/A' }}
+          </td>
+        </ng-container>
+
+        <ng-container matColumnDef="totalPedido">
+          <th mat-header-cell *matHeaderCellDef class="f-w-600 f-s-14">Total</th>
+          <td mat-cell *matCellDef="let pedido">
+            <span class="f-s-14 f-w-600 text-dark">
+              {{ pedido.totalPedido | currency:'PEN':'symbol':'1.2-2' }}
+            </span>
+          </td>
+        </ng-container>
+
+        <ng-container matColumnDef="estado">
+          <th mat-header-cell *matHeaderCellDef class="f-w-600 f-s-14">Estado</th>
+          <td mat-cell *matCellDef="let pedido">
+            <mat-chip [color]="getEstadoColor(pedido.estado)">
+              {{ pedido.estado || 'PENDIENTE' }}
+            </mat-chip>
+          </td>
+        </ng-container>
+
+        <ng-container matColumnDef="acciones">
+          <th mat-header-cell *matHeaderCellDef class="f-w-600 f-s-14"></th>
+          <td mat-cell *matCellDef="let pedido">
+            <button mat-icon-button [matMenuTriggerFor]="menu" aria-label="Menú de acciones">
+              <mat-icon>more_vert</mat-icon>
+            </button>
+            <mat-menu #menu="matMenu">
+              <button mat-menu-item (click)="openEditDialog(pedido)">
+                <mat-icon class="text-primary">edit</mat-icon>
+                <span>Editar</span>
+              </button>
+              <button mat-menu-item *ngIf="pedido.estado !== 'EN_PRODUCCION'" (click)="cambiarEstado(pedido, 'EN_PRODUCCION')">
+                <mat-icon class="text-accent">play_arrow</mat-icon>
+                <span>Iniciar Producción</span>
+              </button>
+              <button mat-menu-item *ngIf="pedido.estado !== 'ENTREGADO' && pedido.estado !== 'CANCELADO'" (click)="cambiarEstado(pedido, 'ENTREGADO')">
+                <mat-icon class="text-primary">check_circle</mat-icon>
+                <span>Marcar Entregado</span>
+              </button>
+              <button mat-menu-item *ngIf="pedido.estado !== 'CANCELADO'" (click)="cambiarEstado(pedido, 'CANCELADO')">
+                <mat-icon class="text-warn">cancel</mat-icon>
+                <span>Cancelar</span>
+              </button>
+              <button mat-menu-item (click)="deletePedido(pedido)">
+                <mat-icon class="text-error">delete</mat-icon>
+                <span>Eliminar</span>
+              </button>
+            </mat-menu>
+          </td>
+        </ng-container>
+
+        <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+        <tr mat-row *matRowDef="let row; columns: displayedColumns" class="hover-row"></tr>
+
+        <tr class="mat-row" *matNoDataRow>
+          <td class="mat-cell text-center p-y-40" [attr.colspan]="displayedColumns.length">
+            <mat-icon class="f-s-48 text-muted m-b-16">shopping_cart</mat-icon>
+            <p class="f-s-16 text-muted m-0">No se encontraron pedidos</p>
+            <button mat-raised-button color="primary" class="m-t-16" (click)="openCreateDialog()">
+              <mat-icon>add</mat-icon>
+              Crear Primer Pedido
+            </button>
+          </td>
+        </tr>
+      </table>
+    </div>
+  </mat-card-content>
+</mat-card>
+
